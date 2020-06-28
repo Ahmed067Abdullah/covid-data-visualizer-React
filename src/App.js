@@ -7,6 +7,7 @@ function App() {
   const [nonCumulativeData, setNonCumulativeData] = useState({});
   const [dates, setDates] = useState([]);
   const [showCumulative, setShowCumulative] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [showDataType, setShowDataType] = useState({ Active: true, Confirmed: true, Recovered: true, Deaths: true });
 
   useEffect(() => {
@@ -14,6 +15,7 @@ function App() {
       .then(response => response.json())
       .then(data => {
         setupState(data);
+        setLoading(false);
       })
       .catch(err => console.log(err));
   }, []);
@@ -26,16 +28,22 @@ function App() {
     for (let i = 1; i < len; i++) {
       const { Confirmed: ConfirmedPrev, Deaths: DeathsPrev, Recovered: RecoveredPrev } = data[i - 1];
       const { Active, Confirmed, Deaths, Recovered, Date } = data[i];
-      localCumulativeData.Active.push(Active);
-      localCumulativeData.Confirmed.push(Confirmed);
-      localCumulativeData.Deaths.push(Deaths);
-      localCumulativeData.Recovered.push(Recovered);
+      if (Active && Date !== '2020-06-10T00:00:00Z' && Date !== '2020-06-12T00:00:00Z') { // to ignore inital dates when there were no cases
+        localCumulativeData.Active.push(Active);
+        localCumulativeData.Confirmed.push(Confirmed);
+        localCumulativeData.Deaths.push(Deaths);
+        localCumulativeData.Recovered.push(Recovered);
 
-      localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev);
-      localNonCumulativeData.Deaths.push(Deaths - DeathsPrev);
-      localNonCumulativeData.Recovered.push(Recovered - RecoveredPrev);
+        if (Date === '2020-06-11T00:00:00Z' || Date === '2020-06-14T00:00:00Z') { // Since data seems wrong 
+          localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev - 6000);
+        } else {
+          localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev);
+        }
+        localNonCumulativeData.Deaths.push(Deaths - DeathsPrev);
+        localNonCumulativeData.Recovered.push(Recovered - RecoveredPrev);
 
-      localDates.push(Date);
+        localDates.push(Date);
+      }
     }
     setCumulativeData(localCumulativeData);
     setNonCumulativeData(localNonCumulativeData);
@@ -72,15 +80,12 @@ function App() {
       height: 350,
       type: 'line',
       zoom: {
-        enabled: false
+        enabled: true
       }
-    },
-    dataLabels: {
-      enabled: false
     },
     stroke: {
       curve: 'straight',
-      width: 3,
+      width: 2,
     },
     title: {
       text: 'Covid Cases, Pakistan',
@@ -102,17 +107,22 @@ function App() {
 
   return (
     <div className="App">
-      <ReactApexChart
-        height={600}
-        options={options}
-        series={graphData}
-        type="line"
-        width={'100%'}
-      />
+      <div className="graph-container">
+        {loading
+          ? <p className='loading'>Loading...</p>
+          : <ReactApexChart
+            height={'100%'}
+            options={options}
+            series={graphData}
+            type="line"
+            width={'100%'}
+          />}
+      </div>
       <div className='btns-container'>
         <div>
           {btns.map(btn => <button
             className={showDataType[btn] ? 'active' : ''}
+            disabled={loading}
             onClick={() => setShowDataType({
               ...showDataType,
               [btn]: !showDataType[btn]
@@ -122,6 +132,7 @@ function App() {
         </div>
         <button
           className='cumulative-btn'
+          disabled={loading}
           onClick={() => setShowCumulative(!showCumulative)}>
           {`Show ${toggleType} Data`}
         </button>
