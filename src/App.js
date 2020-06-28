@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
+import getGraphOptions from './utils/graphOptions';
 import './App.css';
 
 function App() {
@@ -26,14 +27,18 @@ function App() {
     const localNonCumulativeData = { Confirmed: [], Deaths: [], Recovered: [] };
     const localDates = [];
     for (let i = 1; i < len; i++) {
-      const { Confirmed: ConfirmedPrev, Deaths: DeathsPrev, Recovered: RecoveredPrev } = data[i - 1];
       const { Active, Confirmed, Deaths, Recovered, Date } = data[i];
-      if (Active && Date !== '2020-06-10T00:00:00Z' && Date !== '2020-06-12T00:00:00Z') { // to ignore inital dates when there were no cases
+      if (Active && Recovered && Date !== '2020-06-10T00:00:00Z' && Date !== '2020-06-12T00:00:00Z') { // to ignore inital dates when there were no cases
         localCumulativeData.Active.push(Active);
         localCumulativeData.Confirmed.push(Confirmed);
         localCumulativeData.Deaths.push(Deaths);
         localCumulativeData.Recovered.push(Recovered);
 
+        let j = 1;
+        if (!(data[i - 1].Confirmed && data[i - 1].Deaths && data[i - 1].Recovered)) {
+          j = 2;
+        }
+        let { Confirmed: ConfirmedPrev, Deaths: DeathsPrev, Recovered: RecoveredPrev } = data[i - j]
         if (Date === '2020-06-11T00:00:00Z' || Date === '2020-06-14T00:00:00Z') { // Since data seems wrong 
           localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev - 6000);
         } else {
@@ -75,34 +80,6 @@ function App() {
     graphData.push({ name: "Confirmed", data: Confirmed });
   }
 
-  const options = {
-    chart: {
-      height: 350,
-      type: 'line',
-      zoom: {
-        enabled: true
-      }
-    },
-    stroke: {
-      curve: 'straight',
-      width: 2,
-    },
-    title: {
-      text: 'Covid Cases, Pakistan',
-      align: 'left'
-    },
-    grid: {
-      row: {
-        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-        opacity: 0.5
-      },
-    },
-    xaxis: {
-      type: 'datetime',
-      categories: dates,
-    }
-  };
-
   const btns = ['Active', 'Confirmed', 'Recovered', 'Deaths'];
 
   return (
@@ -112,17 +89,24 @@ function App() {
           ? <p className='loading'>Loading...</p>
           : <ReactApexChart
             height={'100%'}
-            options={options}
+            options={getGraphOptions(dates)}
             series={graphData}
             type="line"
             width={'100%'}
           />}
       </div>
+      <p className='updated-on-date'>
+        {loading
+          ? ''
+          : <>Last updated on&nbsp;
+          <span>{new Date(dates[dates.length - 1]).toDateString()}</span>
+          </>}
+      </p>
       <div className='btns-container'>
         <div>
           {btns.map(btn => <button
             className={showDataType[btn] ? 'active' : ''}
-            disabled={loading}
+            disabled={loading || (!showCumulative && btn === 'Active')}
             onClick={() => setShowDataType({
               ...showDataType,
               [btn]: !showDataType[btn]

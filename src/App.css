@@ -3,14 +3,14 @@
 }
 
 .graph-container {
-  height: calc(100vh - 140px);
+  height: calc(100vh - 155px);
   margin: 20px auto;
   width: 95vw;
 }
 
 @media(max-width:382px) {
   .graph-container {
-    height: calc(100vh - 170px);
+    height: calc(100vh - 192px);
     width: 97vw;
   }
 }
@@ -22,6 +22,14 @@
   align-items: center;
   font-weight: 700;
   color: rgba(0, 0, 0, 0.7);
+}
+
+.updated-on-date {
+  margin: -10px 0 10px;
+}
+
+.updated-on-date > span {
+  font-weight: 600;
 }
 
 .btns-container {
