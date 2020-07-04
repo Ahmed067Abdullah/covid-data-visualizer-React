@@ -20,6 +20,10 @@
   width: 95vw;
 }
 
+.graph-container .apexcharts-toolbar{
+  z-index: 0;
+}
+
 @media(max-width:382px) {
   .stats-btn-container {
     padding: 10px 10px 0 0;

@@ -5,7 +5,14 @@ export default dates => {
       type: 'line',
       zoom: {
         enabled: true
-      }
+      },
+      toolbar: {
+        tools: {
+          download: false,
+          selection: false,
+          pan: false,
+        },
+      },
     },
     stroke: {
       curve: 'straight',
