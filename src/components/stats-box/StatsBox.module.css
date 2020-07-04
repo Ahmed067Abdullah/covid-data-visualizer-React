@@ -1,0 +1,20 @@
+.stats-container {
+  margin: 20px 10px;
+  width: 200px;
+  height: 103px;
+}
+
+.heading {
+  text-align: center;
+}
+
+.count {
+  font-size: 32px;
+  font-weight: 500;
+  text-align: center;
+  margin: 10px 0 8px;
+}
+
+.percentage {
+  text-align: center;
+}

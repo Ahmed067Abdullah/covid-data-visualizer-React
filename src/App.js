@@ -2,12 +2,15 @@ import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import getGraphOptions from './utils/graphOptions';
 import './App.css';
+import StatsModal from './components/stats-modal/StatsModal';
 
 function App() {
+  const [lastDay, setLastDay] = useState({})
   const [cumulativeData, setCumulativeData] = useState({});
   const [nonCumulativeData, setNonCumulativeData] = useState({});
   const [dates, setDates] = useState([]);
   const [showCumulative, setShowCumulative] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const [showDataType, setShowDataType] = useState({ Active: true, Confirmed: true, Recovered: true, Deaths: true });
 
@@ -16,9 +19,16 @@ function App() {
       .then(response => response.json())
       .then(data => {
         setupState(data);
+        setLastDay(data[data.length - 1]);
+        localStorage.setItem("testt", JSON.stringify(data));
         setLoading(false);
       })
       .catch(err => console.log(err));
+
+    // const data = JSON.parse(localStorage.getItem("testt"));
+    // setupState(data);
+    // setLastDay(data[data.length - 1]);
+    // setLoading(false);
   }, []);
 
   const setupState = data => {
@@ -84,6 +94,18 @@ function App() {
 
   return (
     <div className="App">
+      <StatsModal
+        open={showModal}
+        handleClose={() => setShowModal(false)}
+        lastDay={lastDay}
+      />
+      <div className="stats-btn-container">
+        <button
+          className="active"
+          disabled={loading}
+          onClick={() => setShowModal(true)}
+        >View Stats</button>
+      </div>
       <div className="graph-container">
         {loading
           ? <p className='loading'>Loading...</p>
@@ -107,6 +129,7 @@ function App() {
           {btns.map(btn => <button
             className={showDataType[btn] ? 'active' : ''}
             disabled={loading || (!showCumulative && btn === 'Active')}
+            key={btn}
             onClick={() => setShowDataType({
               ...showDataType,
               [btn]: !showDataType[btn]

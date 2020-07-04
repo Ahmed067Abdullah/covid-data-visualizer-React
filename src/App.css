@@ -2,15 +2,30 @@
   text-align: center;
 }
 
+.stats-btn-container {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 30px 0 0;
+}
+
+@media(max-width:600px) {
+  .stats-btn-container {
+    padding: 10px 20px 0 0;
+  }
+}
+
 .graph-container {
-  height: calc(100vh - 155px);
+  height: calc(100vh - 201px);
   margin: 20px auto;
   width: 95vw;
 }
 
 @media(max-width:382px) {
+  .stats-btn-container {
+    padding: 10px 10px 0 0;
+  }
   .graph-container {
-    height: calc(100vh - 192px);
+    height: calc(100vh - 238px);
     width: 97vw;
   }
 }
