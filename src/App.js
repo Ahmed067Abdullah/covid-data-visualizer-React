@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import getGraphOptions from './utils/graphOptions';
-import './App.css';
 import StatsModal from './components/stats-modal/StatsModal';
+import getGraphOptions from './utils/graphOptions';
+import apiURL from './config/apiURL';
+import './App.css';
 
 function App() {
   const [lastDay, setLastDay] = useState({})
@@ -15,7 +16,7 @@ function App() {
   const [showDataType, setShowDataType] = useState({ Active: true, Confirmed: true, Recovered: true, Deaths: true });
 
   useEffect(() => {
-    fetch('https://api.covid19api.com/total/country/pakistan')
+    fetch(apiURL)
       .then(response => response.json())
       .then(data => {
         setupState(data);
@@ -31,14 +32,21 @@ function App() {
     // setLoading(false);
   }, []);
 
+  const isDataSetOk = today => {
+    const { Active, Recovered } = today;
+    return Active && Recovered;
+  }
+
   const setupState = data => {
     const len = data.length;
-    const localCumulativeData = { Active: [], Confirmed: [], Deaths: [], Recovered: [] };
-    const localNonCumulativeData = { Confirmed: [], Deaths: [], Recovered: [] };
+    const localCumulativeData = { Active: [], Confirmed: [], Deaths: [], Recovered: [], Tests: [] };
+    const localNonCumulativeData = { Confirmed: [], Deaths: [], Recovered: [], Tests: [] };
     const localDates = [];
+
     for (let i = 1; i < len; i++) {
-      const { Active, Confirmed, Deaths, Recovered, Date } = data[i];
-      if (Active && Recovered && Date !== '2020-06-10T00:00:00Z' && Date !== '2020-06-12T00:00:00Z') { // to ignore inital dates when there were no cases
+      const { Active, Confirmed, Deaths, Recovered, Date, Tests = 0 } = data[i];
+      if (isDataSetOk(data[i])) {
+        localCumulativeData.Tests.push(Tests);
         localCumulativeData.Active.push(Active);
         localCumulativeData.Confirmed.push(Confirmed);
         localCumulativeData.Deaths.push(Deaths);
@@ -48,12 +56,13 @@ function App() {
         if (!(data[i - 1].Confirmed && data[i - 1].Deaths && data[i - 1].Recovered)) {
           j = 2;
         }
-        let { Confirmed: ConfirmedPrev, Deaths: DeathsPrev, Recovered: RecoveredPrev } = data[i - j]
-        if (Date === '2020-06-11T00:00:00Z' || Date === '2020-06-14T00:00:00Z') { // Since data seems wrong 
+        let { Confirmed: ConfirmedPrev, Deaths: DeathsPrev, Recovered: RecoveredPrev, Tests: TestsPrev = 0 } = data[i - j]
+        if (Date === '2020-06-11T00:00:00.000Z' || Date === '2020-06-14T00:00:00.000Z') { // Since data seems wrong 
           localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev - 6000);
         } else {
           localNonCumulativeData.Confirmed.push(Confirmed - ConfirmedPrev);
         }
+        localNonCumulativeData.Tests.push(Tests - TestsPrev);
         localNonCumulativeData.Deaths.push(Deaths - DeathsPrev);
         localNonCumulativeData.Recovered.push(Recovered - RecoveredPrev);
 

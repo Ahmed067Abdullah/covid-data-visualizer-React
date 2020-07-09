@@ -6,11 +6,19 @@
 
 .cross-icon-container {
   display: flex;
-  justify-content: flex-end;
+  justify-content: center;
+}
+
+.cross-icon-container p{
+  margin: 0;
+  margin-left: auto;
+  font-size: 24px;
+  font-weight: 500;
 }
 
 .cross-icon-container button{
   padding: 8px 12px 10px;
   border-radius: 50%;
   font-size: 16px;
+  margin-left: auto;
 }

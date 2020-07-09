@@ -1,0 +1,1 @@
+export default 'https://covid-visualizer-pakistan.herokuapp.com/api/data';
