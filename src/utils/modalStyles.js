@@ -5,6 +5,7 @@ export default {
     right: 'auto',
     bottom: 'auto',
     marginRight: '-50%',
-    transform: 'translate(-50%, -30%)'
+    transform: 'translate(-50%, -30%)',
+    maxHeight: '100vh'
   }
 }

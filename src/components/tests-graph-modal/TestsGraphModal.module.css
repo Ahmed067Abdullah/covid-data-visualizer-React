@@ -1,0 +1,45 @@
+.cross-icon-container {
+  display: flex;
+  justify-content: center;
+}
+
+.cross-icon-container p {
+  margin: 0;
+  margin-left: auto;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.cross-icon-container button {
+  padding: 8px 12px 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  margin-left: auto;
+}
+
+.graph-container {
+  width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media(max-width:800px) {
+  .graph-container {
+    width: 80vw;
+  }
+}
+
+@media(max-width:600px) {
+  .graph-container {
+    width: 100vw;
+  }
+}
+
+.graph-container>div {
+  min-width: 95%;
+}
+
+.button {
+  margin-top: 0px;
+}

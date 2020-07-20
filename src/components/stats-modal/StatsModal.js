@@ -19,18 +19,24 @@ const StatsModal = ({ lastDay, open, handleClose }) => {
     },
     {
       id: 1,
+      heading: 'Total Confirmed',
+      count: Confirmed,
+      percentage: getPercentage(Confirmed, Tests)
+    },
+    {
+      id: 2,
       heading: 'Total Active',
       count: Active,
       percentage: getPercentage(Active, Confirmed)
     },
     {
-      id: 2,
+      id: 3,
       heading: 'Total Recovered',
       count: Recovered,
       percentage: getPercentage(Recovered, Confirmed)
     },
     {
-      id: 3,
+      id: 4,
       heading: 'Total Deaths',
       count: Deaths,
       percentage: getPercentage(Deaths, Confirmed)
