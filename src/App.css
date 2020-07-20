@@ -14,13 +14,27 @@
   }
 }
 
-.graph-container {
+.data-container {
   height: calc(100vh - 201px);
-  margin: 20px auto;
+  margin: 10px auto 20px;
   width: 95vw;
 }
 
-.graph-container .apexcharts-toolbar{
+.select-container {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.select-container > div {
+  width: 200px;
+}
+
+.graph-container {
+  height: calc(100% - 40px);
+}
+
+.graph-container .apexcharts-toolbar {
   z-index: 0;
 }
 
@@ -47,7 +61,7 @@
   margin: -10px 0 10px;
 }
 
-.updated-on-date > span {
+.updated-on-date>span {
   font-weight: 600;
 }
 
