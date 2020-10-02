@@ -9,7 +9,9 @@ const StatsBox = ({ heading, count, percentage }) => {
       <div className={classses['count']}>
         <CountUp delay={0.5} end={count} />
       </div>
-      <div className={classses['percentage']}>{percentage}%</div>
+      <div className={classses['percentage']}>{!isNaN(percentage)
+        ? percentage
+        : 0}%</div>
     </div>
   )
 }

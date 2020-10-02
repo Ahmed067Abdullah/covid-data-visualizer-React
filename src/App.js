@@ -26,7 +26,9 @@ function App() {
     getData(defaultOption.value);
     const data = JSON.parse(localStorage.getItem("testt"));
     setupState(data);
-    setLastDay(data[data.length - 1]);
+    if (data.length) {
+      setLastDay(data[data.length - 1]);
+    }
     setLoading(false);
   }, []);
 
@@ -37,7 +39,9 @@ function App() {
       .then(data => {
         console.log(data)
         setupState(data);
-        setLastDay(data[data.length - 1]);
+        if (data.length) {
+          setLastDay(data[data.length - 1]);
+        }
         localStorage.setItem("testt", JSON.stringify(data));
         setLoading(false);
       })
@@ -187,9 +191,11 @@ function App() {
       <p className='updated-on-date'>
         {loading
           ? ''
-          : <>Last updated on&nbsp;
+          : dates.length
+            ? <>Last updated on&nbsp;
           <span>{new Date(dates[dates.length - 1]).toDateString()}</span>
-          </>}
+            </>
+            : <span>No Data Found</span>}
       </p>
       <div className='btns-container'>
         <div>
